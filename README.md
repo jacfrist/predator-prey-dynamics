@@ -15,7 +15,7 @@ y(t) = predator population at time t
 γ = predator death rate
 δ = predator reproduction rate (based on eating prey)
 
-# Part 2: Equilibrium Points & Stability Analysis
+## Part 2: Equilibrium Points & Stability Analysis
 Equilibrium points are where populations don't change (dx/dt = 0, dy/dt = 0).
 You'd find:
 
@@ -30,7 +30,7 @@ Determine if populations return to equilibrium or oscillate
 
 This is where your linear systems knowledge comes in! You'd show that the coexistence equilibrium has purely imaginary eigenvalues, meaning you get periodic orbits (populations cycle forever).
 
-# Part 3: Implementation and Visualization (The Code)
+## Part 3: Implementation and Visualization (The Code)
 
 Implement Euler's method to show the cycles of the equations. Show how step size affects the solution.
 
