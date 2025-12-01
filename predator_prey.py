@@ -290,7 +290,7 @@ if __name__ == "__main__":
     plot_time_series(t, x, y)
 
     # Plot 2: Phase portrait
-    plot_phase_portrait(model, trajectories, show_vector_field=False)
+    plot_phase_portrait(model, trajectories, show_vector_field=True)
 
     # Plot 3: Compare step sizes
     step_sizes = [0.001, 0.01, 0.1, 0.5]
