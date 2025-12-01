@@ -1,6 +1,6 @@
 """
 Predator-Prey Dynamics Simulation using Lotka-Volterra Equations
-Author: Jacqueline Frist
+Jacqueline Frist
 """
 
 import numpy as np
@@ -10,45 +10,28 @@ from matplotlib.patches import FancyArrowPatch
 
 class LotkaVolterraModel:
     """
-    Implements the Lotka-Volterra predator-prey model.
+    Implements the Lotka-Volterra model.
 
-    
-    Equations:
-    dx/dt = α*x - β*x*y  (prey population)
-    dy/dt = δ*x*y - γ*y  (predator population)
-
-    Parameters:
-    -----------
-    alpha : float
-        Prey birth rate
-    beta : float
-        Predation rate (how often predators catch prey)
-    gamma : float
-        Predator death rate
-    delta : float
-        Predator reproduction rate (based on eating prey)
+    alpha: Prey birth rate
+    beta: Predation rate (how often predators catch prey)
+    gamma: Predator death rate
+    delta: Predator reproduction rate (based on eating prey)
     """
 
     def __init__(self, alpha, beta, gamma, delta):
-        self.alpha = alpha  # prey birth rate
-        self.beta = beta    # predation rate
-        self.gamma = gamma  # predator death rate
-        self.delta = delta  # predator reproduction rate
+        self.alpha = alpha 
+        self.beta = beta  
+        self.gamma = gamma 
+        self.delta = delta
 
     def derivatives(self, x, y):
         """
         Calculate dx/dt and dy/dt at given populations.
 
-        Parameters:
-        -----------
-        x : float
-            Prey population
-        y : float
-            Predator population
+        x: Prey population
+        y: Predator population
 
-        Returns:
-        --------
-        tuple : (dx/dt, dy/dt)
+        Returns tuple: (dx/dt, dy/dt)
         """
         dxdt = self.alpha * x - self.beta * x * y
         dydt = self.delta * x * y - self.gamma * y
@@ -58,20 +41,12 @@ class LotkaVolterraModel:
         """
         Solve the Lotka-Volterra equations using Euler's method.
 
-        Parameters:
-        -----------
-        x0 : float
-            Initial prey population
-        y0 : float
-            Initial predator population
-        t_max : float
-            Maximum time to simulate
-        dt : float
-            Time step size
+        x0: Initial prey population
+        y0: Initial predator population
+        t_max: Maximum time to simulate
+        dt: Time step size
 
-        Returns:
-        --------
-        tuple : (t_array, x_array, y_array)
+        Returns tuple: (t_array, x_array, y_array)
         """
         n_steps = int(t_max / dt)
         t = np.zeros(n_steps)
@@ -83,14 +58,14 @@ class LotkaVolterraModel:
         y[0] = y0
         t[0] = 0
 
-        # Euler's method iteration
+        # Euler's method
         for i in range(1, n_steps):
             dxdt, dydt = self.derivatives(x[i-1], y[i-1])
             x[i] = x[i-1] + dt * dxdt
             y[i] = y[i-1] + dt * dydt
             t[i] = t[i-1] + dt
 
-            # Prevent negative populations
+            # Prevent negative results
             x[i] = max(0, x[i])
             y[i] = max(0, y[i])
 
@@ -98,18 +73,16 @@ class LotkaVolterraModel:
 
     def equilibrium_points(self):
         """
-        Calculate equilibrium points where dx/dt = 0 and dy/dt = 0.
+        Calculates equilibrium points where dx/dt = 0 and dy/dt = 0.
 
-        Returns:
-        --------
-        list of tuples : [(x1, y1), (x2, y2), ...]
+        Returns list of tuples: [(x1, y1), (x2, y2), ...]
         """
-        # Extinction equilibrium
+        # Extinction equilibrium 
         eq1 = (0, 0)
 
         # Coexistence equilibrium
-        # dx/dt = 0: α*x - β*x*y = 0 => x(α - β*y) = 0 => y = α/β
-        # dy/dt = 0: δ*x*y - γ*y = 0 => y(δ*x - γ) = 0 => x = γ/δ
+        # y = α/β
+        # x = γ/δ
         eq2 = (self.gamma / self.delta, self.alpha / self.beta)
 
         return [eq1, eq2]
@@ -118,19 +91,10 @@ class LotkaVolterraModel:
         """
         Calculate the Jacobian matrix at point (x, y).
 
-        J = [[∂(dx/dt)/∂x, ∂(dx/dt)/∂y],
-             [∂(dy/dt)/∂x, ∂(dy/dt)/∂y]]
+        x:  Prey population
+        y:  Predator population
 
-        Parameters:
-        -----------
-        x : float
-            Prey population
-        y : float
-            Predator population
-
-        Returns:
-        --------
-        np.array : 2x2 Jacobian matrix
+        Returns array (2x2 Jacobian matrix)
         """
         J = np.array([
             [self.alpha - self.beta * y, -self.beta * x],
@@ -142,9 +106,7 @@ class LotkaVolterraModel:
         """
         Perform stability analysis at equilibrium points.
 
-        Returns:
-        --------
-        list of dicts : Information about each equilibrium point
+        Returns list of dicts: Information about each equilibrium point
         """
         equilibria = self.equilibrium_points()
         results = []
@@ -194,16 +156,11 @@ def plot_time_series(t, x, y, title="Population Dynamics Over Time"):
 
 def plot_phase_portrait(model, trajectories, show_vector_field=True):
     """
-    Plot phase portrait (prey vs predator) with optional vector field.
+    Plot phase portrait
 
-    Parameters:
-    -----------
-    model : LotkaVolterraModel
-        The model instance
-    trajectories : list of tuples
-        List of (t, x, y) tuples for different initial conditions
-    show_vector_field : bool
-        Whether to show the direction field
+    model: The model instance
+    trajectories: List of (t, x, y) tuples for different initial conditions
+    show_vector_field: Whether to show the direction field
     """
     plt.figure(figsize=(10, 8))
 
@@ -224,7 +181,7 @@ def plot_phase_portrait(model, trajectories, show_vector_field=True):
 
         # Normalize arrows
         magnitude = np.sqrt(dX**2 + dY**2)
-        magnitude[magnitude == 0] = 1  # Avoid division by zero
+        magnitude[magnitude == 0] = 1 
         dX_norm = dX / magnitude
         dY_norm = dY / magnitude
 
@@ -236,7 +193,7 @@ def plot_phase_portrait(model, trajectories, show_vector_field=True):
     for idx, (t, x, y) in enumerate(trajectories):
         plt.plot(x, y, linewidth=2, color=colors[idx],
                 label=f'Initial: ({x[0]:.1f}, {y[0]:.1f})')
-        # Mark starting point
+        # Starting point
         plt.plot(x[0], y[0], 'o', color=colors[idx], markersize=8)
 
     # Plot equilibrium points
@@ -255,7 +212,7 @@ def plot_phase_portrait(model, trajectories, show_vector_field=True):
 
 def compare_step_sizes(model, x0, y0, t_max, step_sizes):
     """
-    Compare the effect of different step sizes in Euler's method.
+    Compares the effect of different step sizes.
     """
     fig, axes = plt.subplots(2, len(step_sizes), figsize=(15, 8))
 
@@ -288,11 +245,9 @@ def compare_step_sizes(model, x0, y0, t_max, step_sizes):
 
 def print_stability_analysis(model):
     """
-    Print stability analysis results.
+    Prints stability analysis results
     """
-    print("=" * 70)
-    print("STABILITY ANALYSIS")
-    print("=" * 70)
+    print("Stability Analysis")
 
     results = model.stability_analysis()
 
@@ -304,55 +259,42 @@ def print_stability_analysis(model):
         print(f"\nEigenvalues: {result['eigenvalues']}")
         print(f"Stability: {result['stability']}")
 
-    print("\n" + "=" * 70)
-
-
 if __name__ == "__main__":
-    # Default parameters (classic Lotka-Volterra)
-    alpha = 1.0   # prey birth rate
-    beta = 0.1    # predation rate
-    gamma = 1.5   # predator death rate
-    delta = 0.075 # predator reproduction rate
+    # Default parameters
+    alpha = 1.0 
+    beta = 0.1  
+    gamma = 1.5 
+    delta = 0.075
 
-    # Create model
     model = LotkaVolterraModel(alpha, beta, gamma, delta)
 
-    # Print stability analysis
     print_stability_analysis(model)
 
-    # Simulation parameters
     t_max = 50.0
     dt = 0.01
 
-    # Multiple initial conditions
     initial_conditions = [
-        (10, 5),   # Low prey, low predators
-        (20, 5),   # Medium prey, low predators
-        (30, 10),  # High prey, medium predators
-        (15, 15),  # Balanced populations
+        (10, 5),   
+        (20, 5),  
+        (30, 10), 
+        (15, 15), 
     ]
 
-    # Generate trajectories
     trajectories = []
     for x0, y0 in initial_conditions:
         t, x, y = model.euler_method(x0, y0, t_max, dt)
         trajectories.append((t, x, y))
 
-    # Plot 1: Time series for first initial condition
+    # Plot 1: Time series for one condition
     t, x, y = trajectories[0]
     plot_time_series(t, x, y)
 
-    # Plot 2: Phase portrait with multiple trajectories
-    plot_phase_portrait(model, trajectories, show_vector_field=True)
+    # Plot 2: Phase portrait
+    plot_phase_portrait(model, trajectories, show_vector_field=False)
 
-    # Plot 3: Compare different step sizes
+    # Plot 3: Compare step sizes
     step_sizes = [0.001, 0.01, 0.1, 0.5]
     compare_step_sizes(model, initial_conditions[2][0],
                       initial_conditions[2][1], t_max, step_sizes)
 
     plt.show()
-
-    print("\nVisualization complete! Check the plots for:")
-    print("1. Time series showing population cycles")
-    print("2. Phase portrait with periodic orbits and vector field")
-    print("3. Effect of different step sizes in Euler's method")
