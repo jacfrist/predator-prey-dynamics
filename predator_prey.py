@@ -87,58 +87,6 @@ class LotkaVolterraModel:
 
         return [eq1, eq2]
 
-    def jacobian(self, x, y):
-        """
-        Calculate the Jacobian matrix at point (x, y).
-
-        x:  Prey population
-        y:  Predator population
-
-        Returns array (2x2 Jacobian matrix)
-        """
-        J = np.array([
-            [self.alpha - self.beta * y, -self.beta * x],
-            [self.delta * y, self.delta * x - self.gamma]
-        ])
-        return J
-
-    def stability_analysis(self):
-        """
-        Perform stability analysis at equilibrium points.
-
-        Returns list of dicts: Information about each equilibrium point
-        """
-        equilibria = self.equilibrium_points()
-        results = []
-
-        for eq in equilibria:
-            x_eq, y_eq = eq
-            J = self.jacobian(x_eq, y_eq)
-            eigenvalues = np.linalg.eigvals(J)
-
-            # Determine stability
-            real_parts = np.real(eigenvalues)
-            imag_parts = np.imag(eigenvalues)
-
-            if np.allclose(real_parts, 0):
-                stability = "Center (neutral stability - periodic orbits)"
-            elif np.all(real_parts < 0):
-                stability = "Stable (attracting)"
-            elif np.any(real_parts > 0):
-                stability = "Unstable (repelling)"
-            else:
-                stability = "Unknown"
-
-            results.append({
-                'equilibrium': eq,
-                'jacobian': J,
-                'eigenvalues': eigenvalues,
-                'stability': stability
-            })
-
-        return results
-
-
 def plot_time_series(t, x, y, title="Population Dynamics Over Time"):
     """
     Plot prey and predator populations over time.
@@ -242,23 +190,6 @@ def compare_step_sizes(model, x0, y0, t_max, step_sizes):
                  fontsize=16, fontweight='bold', y=1.00)
     plt.tight_layout()
 
-
-def print_stability_analysis(model):
-    """
-    Prints stability analysis results
-    """
-    print("Stability Analysis")
-
-    results = model.stability_analysis()
-
-    for i, result in enumerate(results, 1):
-        print(f"\nEquilibrium Point {i}: {result['equilibrium']}")
-        print("-" * 70)
-        print("Jacobian Matrix:")
-        print(result['jacobian'])
-        print(f"\nEigenvalues: {result['eigenvalues']}")
-        print(f"Stability: {result['stability']}")
-
 if __name__ == "__main__":
     # Default parameters
     alpha = 1.0 
@@ -267,8 +198,6 @@ if __name__ == "__main__":
     delta = 0.075
 
     model = LotkaVolterraModel(alpha, beta, gamma, delta)
-
-    print_stability_analysis(model)
 
     t_max = 50.0
     dt = 0.01
